@@ -1,9 +1,9 @@
-/* LazyAldi v.1
-TODO: Suggestions?
-Fix sorting in panels
-Fix checkboxes
-Do translate menu
-*/
+/* LazyAldi v1.1.0
+   - Added vertical tab auto-hide (peek + hover reveal)
+   - Defined missing core variables (--radius, --blurStrength)
+   - Fixed invalid CSS declarations
+   - Corrected Startpage selector bug
+*/ 
 
 :root {
     --customRadius: 8px; /* NOT USING NOW */
@@ -23,7 +23,10 @@ Do translate menu
 
     --anim-duration: 128ms;
 
-    --space: 5px;
+	--space: 5px;
+
+    --radius: 8px;
+    --blurStrength: 12px;
 
 }
 
@@ -152,7 +155,7 @@ Do translate menu
 
 /* doesnt disappear on collapse transition */
 #panels-container.switcher #switch {
-    visibility: none !important; 
+    visibility: hidden !important; 
 }
 
 #panels {
@@ -186,7 +189,7 @@ Do translate menu
 }
 
 #panels .sortselector-button {
-    background-color: none !important;
+    background-color: transparent !important;
     height: calc(var(--treeViewRowHeight) - 2px);
 }
 
@@ -948,4 +951,94 @@ button.button-startpage:after { content: unset; }
 #panels .webpanel-stack .webpanel .webpanel-content {
     border-radius: var(--radius) !important;
     overflow: hidden; 
+}
+/* ================================ */
+/* VERTICAL TABBAR AUTO-HIDE (ADD)  */
+/* ================================ */
+
+:root {
+  --tabbar-peek-width: 32px;
+  --tabbar-transition: transform .2s ease-out, opacity .2s ease-out, background-color .2s ease-out, color .2s ease-out;
+}
+
+/* Base hidden state */
+#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper {
+  position: absolute;
+  z-index: 2;
+  transition: var(--tabbar-transition) !important;
+  opacity: 1;
+  background-color: var(--bg) !important;
+  backdrop-filter: var(--blurHigh) !important;
+  -webkit-backdrop-filter: var(--blurHigh) !important;
+}
+
+/* Left side: hide except peek */
+#browser.tabs-left .tabbar-wrapper {
+  transform: translateX(calc(-100% + var(--tabbar-peek-width)));
+}
+
+/* Right side: hide except peek */
+#browser.tabs-right .tabbar-wrapper {
+  right: 0;
+  transform: translateX(calc(100% - var(--tabbar-peek-width)));
+}
+
+/* Optional: hide titles when collapsed (keeps icons visible) */
+#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper .tab .title {
+  color: transparent !important;
+}
+#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper:hover .tab .title {
+  color: var(--colorFg) !important;
+}
+
+/* Reveal on hover */
+#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper:hover {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+
+/* Reveal when mouse reaches edge-adjacent UI */
+#browser.tabs-left .mainbar:hover + .tabbar-wrapper,
+#browser.tabs-right .webpage:hover + .tabbar-wrapper {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+
+/* Keep visible when workspace popup is active */
+#browser:is(.tabs-left, .tabs-right):has(.WorkspacePopup:visible, .workspace-popup:visible) .tabbar-wrapper {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+
+/* Keep visible during workspace naming */
+#browser:is(.tabs-left, .tabs-right):has(.quick-command-container.workspace-naming, .workspace-naming, input[placeholder*="workspace"]) .tabbar-wrapper {
+  transform: translateX(0) !important;
+  transition: none !important;
+  opacity: 1 !important;
+}
+
+/* Hide on click outside (left) */
+html:active:not(:has(
+  .tabbar-wrapper:hover,
+  .quick-command-container.workspace-naming,
+  .workspace-naming,
+  input[placeholder*="workspace"]:focus,
+  .WorkspacePopup:visible,
+  .workspace-popup:visible
+)) #browser.tabs-left .tabbar-wrapper {
+  transform: translateX(calc(-100% + var(--tabbar-peek-width))) !important;
+  opacity: 0 !important;
+}
+
+/* Hide on click outside (right) */
+html:active:not(:has(
+  .tabbar-wrapper:hover,
+  .quick-command-container.workspace-naming,
+  .workspace-naming,
+  input[placeholder*="workspace"]:focus,
+  .WorkspacePopup:visible,
+  .workspace-popup:visible
+)) #browser.tabs-right .tabbar-wrapper {
+  transform: translateX(calc(100% - var(--tabbar-peek-width))) !important;
+  opacity: 0 !important;
 }
