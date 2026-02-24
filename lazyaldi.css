@@ -8,8 +8,8 @@
 :root {
     --customRadius: 8px; /* NOT USING NOW */
 
-    --bgDark: rgba(0, 0, 0, 0.4);
-    --bgLight: rgba(255, 255, 255, 0.4);
+	--bgDark: rgba(0, 0, 0, 0.55);
+	--bgLight: rgba(255, 255, 255, 0.55);
     
     --bgDisabledDark: rgba(0, 0, 0, 0.2);
     --bgDisabledLight: rgba(255, 255, 255, 0.2);
@@ -26,7 +26,7 @@
 	--space: 5px;
 
     --radius: 8px;
-    --blurStrength: 12px;
+    --blurStrength: 40px;
 
 }
 
@@ -1023,3 +1023,4 @@ button.button-startpage:after { content: unset; }
   transform: translateX(0) !important;
   opacity: 1 !important;
 }
+
