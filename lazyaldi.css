@@ -953,74 +953,73 @@ button.button-startpage:after { content: unset; }
     overflow: hidden; 
 }
 /* ================================ */
-/* VERTICAL TABBAR AUTO-HIDE v3     */
-/* Liquid-glass (blur + tint)      */
-/* No peek, reveal on edge-adjacent */
+/* VERTICAL TABBAR AUTO-HIDE v4      */
+/* Liquid-Glass (blur + tint) + Toggle */
 /* ================================ */
 
-:root{
+:root {
   --tabbar-transition: transform .18s ease-out, opacity .18s ease-out;
-  --tabbar-glass-tint: var(--bg);     /* already rgba(… , 0.4) in your theme */
+  --tabbar-glass-tint: var(--bg);     /* uses your theme rgba tint */
   --tabbar-glass-blur: 14px;
 }
 
-/* stop Vivaldi’s own solid background competing */
-#browser:not(.transparent-tabbar) #tabs-tabbar-container{
+/* stop Vivaldi’s own background from blocking glass */
+#browser:not(.transparent-tabbar) #tabs-tabbar-container {
   background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-/* glass layer = tabbar-wrapper itself */
-#browser:is(.tabs-left,.tabs-right) .tabbar-wrapper{
+/* glass layer on the wrapper */
+#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper {
   position: absolute;
   z-index: 2;
-
-  /* IMPORTANT: create its own stacking context so backdrop-filter works */
   isolation: isolate;
 
-  /* liquid glass */
   background-color: var(--tabbar-glass-tint) !important;
   backdrop-filter: blur(var(--tabbar-glass-blur)) saturate(1.35) contrast(1.05);
   -webkit-backdrop-filter: blur(var(--tabbar-glass-blur)) saturate(1.35) contrast(1.05);
 
   border-radius: var(--radius) !important;
-
   transition: var(--tabbar-transition) !important;
   will-change: transform, opacity;
 }
 
-/* fully hidden by default (no peek) */
-#browser.tabs-left .tabbar-wrapper{
-  transform: translateX(-100%);
-  opacity: 0;
-}
-#browser.tabs-right .tabbar-wrapper{
-  right: 0;
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-/* reveal on hover of the tabbar */
-#browser:is(.tabs-left,.tabs-right) .tabbar-wrapper:hover{
+/* ================================ */
+/* DEFAULT MODE: visible tabbar      */
+/* ================================ */
+#browser.tabs-left .tabbar-wrapper,
+#browser.tabs-right .tabbar-wrapper {
   transform: translateX(0) !important;
   opacity: 1 !important;
 }
 
-/* reveal when hovering the UI right next to the edge */
-#browser.tabs-left .mainbar:hover + .tabbar-wrapper{
-  transform: translateX(0) !important;
-  opacity: 1 !important;
+/* ================================ */
+/* AUTO-HIDE MODE (when class added) */
+/* ================================ */
+#browser.autohide-tabs.tabs-left .tabbar-wrapper {
+  transform: translateX(-100%) !important;
+  opacity: 0 !important;
 }
-#browser.tabs-right .webpage:hover + .tabbar-wrapper{
+#browser.autohide-tabs.tabs-right .tabbar-wrapper {
+  right: 0 !important;
+  transform: translateX(100%) !important;
+  opacity: 0 !important;
+}
+
+/* reveal while autohide is on */
+#browser.autohide-tabs:is(.tabs-left, .tabs-right) .tabbar-wrapper:hover,
+#browser.autohide-tabs.tabs-left .mainbar:hover + .tabbar-wrapper,
+#browser.autohide-tabs.tabs-right .webpage:hover + .tabbar-wrapper {
   transform: translateX(0) !important;
   opacity: 1 !important;
 }
 
-/* keep visible while workspace popup is open / naming */
-#browser:is(.tabs-left,.tabs-right):has(.WorkspacePopup:visible, .workspace-popup:visible) .tabbar-wrapper,
-#browser:is(.tabs-left,.tabs-right):has(.quick-command-container.workspace-naming, .workspace-naming, input[placeholder*="workspace"]) .tabbar-wrapper{
+/* keep visible if workspace popup or naming active */
+#browser.autohide-tabs:is(.tabs-left, .tabs-right):has(.WorkspacePopup:visible, .workspace-popup:visible) .tabbar-wrapper,
+#browser.autohide-tabs:is(.tabs-left, .tabs-right):has(.quick-command-container.workspace-naming, .workspace-naming, input[placeholder*="workspace"]) .tabbar-wrapper {
   transform: translateX(0) !important;
   opacity: 1 !important;
 }
+
 
