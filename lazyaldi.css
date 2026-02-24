@@ -6,44 +6,64 @@
 */ 
 
 
+/* ================================ */
+/* Vivaldi Liquid-Glass Auto-Hide   */
+/* ================================ */
+
 :root {
-    --lessTransparent: transparent 50%; /* TRANSPARENCY OF BROWSER - 50% */
-    --blur: blur(15px); /* BLUR OF BROWSER - 15px */
+  /* glass variables */
+  --tabbar-glass-tint: color-mix(in srgb, var(--colorBg), transparent 60%);
+  --tabbar-blur: 14px;
+  --tabbar-transition: transform .2s ease, opacity .2s ease;
 }
 
-/* ================================ */
-/* TABBAR STABILITY + VISUAL SYSTEM */
-/* ================================ */
-
-/* Tabbar glass container */
+/* base transparent glass layer */
 #browser .tabbar-wrapper,
 #browser.tabs-top #header {
-  background: color-mix(in srgb, var(--colorBg), transparent 60%) !important;
-  backdrop-filter: blur(12px) saturate(1.2) contrast(1.1) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(1.2) contrast(1.1) !important;
+  background: var(--tabbar-glass-tint) !important;
+  backdrop-filter: blur(var(--tabbar-blur)) saturate(1.25) !important;
+  -webkit-backdrop-filter: blur(var(--tabbar-blur)) saturate(1.25) !important;
   border-radius: var(--radius) !important;
-  padding: 5px 0 !important;
+  padding: 6px 0 !important;
   box-shadow: none !important;
 }
 
-/* Tabbar base container */
+/* container behind tabbar */
 #browser:not(.transparent-tabbar) #tabs-tabbar-container {
-  background: color-mix(in srgb, var(--colorBg), transparent 50%) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
+  background: var(--tabbar-glass-tint) !important;
+  backdrop-filter: blur(calc(var(--tabbar-blur) * 0.8)) !important;
+  -webkit-backdrop-filter: blur(calc(var(--tabbar-blur) * 0.8)) !important;
   border-radius: var(--radius) !important;
-  margin: 0 5px;
+  margin: 0 6px;
 }
 
-/* Left/right margin */
-#browser:not(.transparent-tabbar) #tabs-tabbar-container.left {
-  margin-left: 5px;
-}
-#browser:not(.transparent-tabbar) #tabs-tabbar-container.right {
-  margin-right: 5px;
+/* visible tabbar (default without autohide) */
+#browser.tabs-left .tabbar-wrapper,
+#browser.tabs-right .tabbar-wrapper {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
 }
 
-/* Tab padding and sizing: stable height */
+/* auto-hide mode */
+#browser.autohide-tabs.tabs-left .tabbar-wrapper {
+  transform: translateX(-100%) !important;
+  opacity: 0 !important;
+}
+#browser.autohide-tabs.tabs-right .tabbar-wrapper {
+  right: 0 !important;
+  transform: translateX(100%) !important;
+  opacity: 0 !important;
+}
+
+/* reveal on hover */
+#browser.autohide-tabs:is(.tabs-left, .tabs-right) .tabbar-wrapper:hover,
+#browser.autohide-tabs.tabs-left .mainbar:hover + .tabbar-wrapper,
+#browser.autohide-tabs.tabs-right .webpage:hover + .tabbar-wrapper {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+
+/* tab sizing */
 #tabs-container .tab {
   padding: 0 10px !important;
   height: 36px !important;
@@ -51,24 +71,19 @@
   transition: background 0.18s ease, color 0.18s ease;
 }
 
-/* Hover background */
-#tabs-container .tab:not(.tab-group, .tab.active):hover {
-  background: color-mix(in srgb, var(--colorBg), transparent 55%) !important;
+/* hover tab */
+#tabs-container .tab:not(.tab-active):hover {
+  background: color-mix(in srgb, var(--colorBg), transparent 50%) !important;
 }
 
-/* Active tab visuals */
+/* active tab styling */
 #browser.color-behind-tabs-on .tab.active,
 #browser .tab-position.colored .tab.active {
-  background: color-mix(in srgb, var(--colorBg), transparent 45%) !important;
+  background: color-mix(in srgb, var(--colorBg), transparent 40%) !important;
   font-weight: 500 !important;
 }
 
-/* Remove default shadow under active */
-.density-on:not(.tabs-at-edge) .tab.active:not(.tab-in-accordion, .tab-accordion) {
-  box-shadow: none !important;
-}
-
-/* Pinned tabs sizing */
+/* pinned tabs sizing */
 #tabs-container .tab.pinned {
   padding: 0 8px !important;
 }
@@ -76,20 +91,11 @@
   margin-right: 0 !important;
 }
 
-/* Scroll overflow padding */
+/* scroll padding when many tabs */
 .tabs-left #tabs-container:has(.tab-strip.overflow),
 .tabs-right #tabs-container:has(.tab-strip.overflow) {
   padding-right: 8px !important;
 }
-
-/* Separator line beneath pinned */
-.separator hr {
-  border: none !important;
-  opacity: 0.3 !important;
-  background: color-mix(in srgb, var(--colorBg), transparent 70%) !important;
-  height: 1px !important;
-}
-
 /* SETTINGS OF ALL INPUTS */
 
 select:not(.sortselector-dropdown) { /* ADJUSTING SELECTS IN MANY WINDOWS ETC */
@@ -1518,6 +1524,7 @@ button.privacy-btn-icon { /* FIXING PRIVACY BUTTON */
     background-color:  color-mix(in srgb, var(--colorBg), var(--lessTransparent));
     border-color: transparent;
 }
+
 
 
 
