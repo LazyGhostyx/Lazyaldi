@@ -960,133 +960,132 @@ button.button-startpage:after { content: unset; }
     border-radius: var(--radius) !important;
     overflow: hidden; 
 }
-/* ------------------------------- */
-/* AUTO-HIDE ONLY FOR VERTICAL TABS */
-/* ------------------------------- */
 
-/* Base glass container (overrides your generic #tabs-tabbar-container block when tabs are left/right) */
-.tabs-left #tabs-tabbar-container,
-.tabs-right #tabs-tabbar-container {
-    width: var(--zenCollapsedWidth) !important;
-    min-width: var(--zenCollapsedWidth) !important;
-    overflow: hidden !important;
 
-    transition: width var(--anim-duration) ease !important;
 
-    background-color: var(--bg) !important;
-    backdrop-filter: blur(var(--zenTabsBlurPx)) !important;
-    -webkit-backdrop-filter: blur(var(--zenTabsBlurPx)) !important;
 
-    border-radius: var(--radius) !important;
+/* --------------------------- */
+/* ZEN TABS (VERTICAL ONLY)    */
+/* --------------------------- */
 
-    /* liquid depth */
-    box-shadow:
-        inset 0 0 0 1px color-mix(in srgb, white, transparent 92%),
-        0 8px 24px rgba(0,0,0,0.25);
+#browser.zen-tabs.tabs-left #tabs-tabbar-container,
+#browser.zen-tabs.tabs-right #tabs-tabbar-container{
+  width: var(--zenCollapsedWidth) !important;
+  min-width: var(--zenCollapsedWidth) !important;
+  overflow: hidden !important;
+
+  transition: width var(--anim-duration) ease !important;
+
+  background-color: var(--bg) !important;
+  background-image: none !important;
+  backdrop-filter: blur(var(--zenTabsBlurPx)) !important;
+  -webkit-backdrop-filter: blur(var(--zenTabsBlurPx)) !important;
+
+  border-radius: var(--radius) !important;
+
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, white, transparent 92%),
+    0 8px 24px rgba(0,0,0,0.25);
 }
 
-/* Expand on hover */
-.tabs-left #tabs-tabbar-container:hover,
-.tabs-right #tabs-tabbar-container:hover {
-    width: var(--zenExpandedWidth) !important;
+#browser.zen-tabs.tabs-left #tabs-tabbar-container:hover,
+#browser.zen-tabs.tabs-right #tabs-tabbar-container:hover{
+  width: var(--zenExpandedWidth) !important;
 }
 
-/* ---------------------------------- */
-/* KEEP WEBPAGE ALIGNED (left / right) */
-/* ---------------------------------- */
-
-/* Left: collapsed */
-.tabs-left #webpage-stack {
-    margin-left: var(--zenCollapsedWidth) !important;
-    transition: margin-left var(--anim-duration) ease !important;
+/* Keep webpage aligned (best-effort across builds) */
+#browser.zen-tabs.tabs-left #webpage-stack{
+  margin-left: var(--zenCollapsedWidth) !important;
+  transition: margin-left var(--anim-duration) ease !important;
+}
+#browser.zen-tabs.tabs-left #tabs-tabbar-container:hover ~ #webpage-stack,
+#browser.zen-tabs.tabs-left #tabs-tabbar-container:hover + #webpage-stack{
+  margin-left: var(--zenExpandedWidth) !important;
 }
 
-/* Left: expanded on hover (covers both possible sibling layouts) */
-.tabs-left #tabs-tabbar-container:hover ~ #webpage-stack,
-.tabs-left #tabs-tabbar-container:hover + #webpage-stack {
-    margin-left: var(--zenExpandedWidth) !important;
+#browser.zen-tabs.tabs-right #webpage-stack{
+  margin-right: var(--zenCollapsedWidth) !important;
+  transition: margin-right var(--anim-duration) ease !important;
+}
+#browser.zen-tabs.tabs-right #tabs-tabbar-container:hover ~ #webpage-stack,
+#browser.zen-tabs.tabs-right #tabs-tabbar-container:hover + #webpage-stack{
+  margin-right: var(--zenExpandedWidth) !important;
 }
 
-/* Right: collapsed */
-.tabs-right #webpage-stack {
-    margin-right: var(--zenCollapsedWidth) !important;
-    transition: margin-right var(--anim-duration) ease !important;
+/* Icons-only feel when collapsed */
+#browser.zen-tabs.tabs-left #tabs-tabbar-container:not(:hover) .tab .title,
+#browser.zen-tabs.tabs-right #tabs-tabbar-container:not(:hover) .tab .title{
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+#browser.zen-tabs.tabs-left #tabs-tabbar-container:not(:hover) .tab,
+#browser.zen-tabs.tabs-right #tabs-tabbar-container:not(:hover) .tab{
+  padding-left: 6px !important;
+  padding-right: 6px !important;
 }
 
-/* Right: expanded on hover */
-.tabs-right #tabs-tabbar-container:hover ~ #webpage-stack,
-.tabs-right #tabs-tabbar-container:hover + #webpage-stack {
-    margin-right: var(--zenExpandedWidth) !important;
+/* Pinned tabs at top */
+#browser.zen-tabs.tabs-left .tab.pinned,
+#browser.zen-tabs.tabs-right .tab.pinned{
+  order: -10 !important;
+  height: 40px !important;
+}
+#browser.zen-tabs.tabs-left .tab.pinned:last-of-type::after,
+#browser.zen-tabs.tabs-right .tab.pinned:last-of-type::after{
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -2px;
+  height: 1px;
+  background: var(--zenPinnedDivider);
 }
 
-/* ---------------------------------- */
-/* ICONS-ONLY FEEL WHEN COLLAPSED      */
-/* ---------------------------------- */
-
-/* Hide titles when not hovered (keeps icons visible) */
-.tabs-left #tabs-tabbar-container:not(:hover) .tab .title,
-.tabs-right #tabs-tabbar-container:not(:hover) .tab .title {
-    opacity: 0 !important;
-    pointer-events: none !important;
+/* Hover/active glass */
+#browser.zen-tabs.tabs-left #tabs-tabbar-container .tab:hover,
+#browser.zen-tabs.tabs-right #tabs-tabbar-container .tab:hover,
+#browser.zen-tabs.tabs-left #tabs-tabbar-container .tab.active,
+#browser.zen-tabs.tabs-right #tabs-tabbar-container .tab.active{
+  background-color: var(--bg) !important;
+  backdrop-filter: var(--blurMed) !important;
+  -webkit-backdrop-filter: var(--blurMed) !important;
+  border-radius: var(--radius) !important;
 }
 
-/* Tighten tab padding in collapsed state */
-.tabs-left #tabs-tabbar-container:not(:hover) .tab,
-.tabs-right #tabs-tabbar-container:not(:hover) .tab {
-    padding-left: 6px !important;
-    padding-right: 6px !important;
+/* Easier edge-hit */
+#browser.zen-tabs.tabs-left #tabs-tabbar-container::before,
+#browser.zen-tabs.tabs-right #tabs-tabbar-container::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:8px;
+  pointer-events:none;
+}
+#browser.zen-tabs.tabs-left #tabs-tabbar-container::before{ left:0; }
+#browser.zen-tabs.tabs-right #tabs-tabbar-container::before{ right:0; }
+
+/* ------------------------------------- */
+/* NO COLORED TABS (CSS side hard-kill)  */
+/* ------------------------------------- */
+/* Vivaldi paints colored stacks/groups via inline style + special wrappers.
+   This CSS disables the common layers; JS will also strip inline styles. */
+
+#browser.no-colored-tabs .tab-position.colored .tab,
+#browser.no-colored-tabs .tab-position.colored .accordion-toggle-arrow,
+#browser.no-colored-tabs .tab-position.colored .tab-group-indicator,
+#browser.no-colored-tabs .tab-position.colored .tabbar-group-title{
+  background-image: none !important;
 }
 
-/* ---------------------------------- */
-/* PINNED TABS AT TOP (ZEN-LIKE)       */
-/* ---------------------------------- */
-
-/* Force pinned tabs to the top of the flow */
-.tabs-left .tab.pinned,
-.tabs-right .tab.pinned {
-    order: -10 !important;
-    height: 40px !important;
+#browser.no-colored-tabs .tab-position.colored .tab::before,
+#browser.no-colored-tabs .tab-position.colored .tab::after{
+  background-image: none !important;
 }
 
-/* Divider under the pinned block:
-   This draws under the last pinned tab in the list. */
-.tabs-left .tab.pinned:last-of-type::after,
-.tabs-right .tab.pinned:last-of-type::after {
-    content: "";
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: -2px;
-    height: 1px;
-    background: var(--zenPinnedDivider);
+/* If Vivaldi injects “paint” layers, force them transparent */
+#browser.no-colored-tabs .tab-position.colored [style*="background"],
+#browser.no-colored-tabs .tab-position.colored [style*="background-image"]{
+  background: transparent !important;
+  background-image: none !important;
 }
-
-/* ---------------------------------- */
-/* HOVER/ACTIVE GLASS (matches your theme) */
-/* ---------------------------------- */
-
-.tabs-left #tabs-tabbar-container .tab:hover,
-.tabs-right #tabs-tabbar-container .tab:hover,
-.tabs-left #tabs-tabbar-container .tab.active,
-.tabs-right #tabs-tabbar-container .tab.active {
-    background-color: var(--bg) !important;
-    backdrop-filter: var(--blurMed) !important;
-    -webkit-backdrop-filter: var(--blurMed) !important;
-    border-radius: var(--radius) !important;
-}
-
-/* ---------------------------------- */
-/* OPTIONAL: make the edge easier to hit */
-/* ---------------------------------- */
-
-.tabs-left #tabs-tabbar-container::before,
-.tabs-right #tabs-tabbar-container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 8px;
-    pointer-events: none;
-}
-.tabs-left #tabs-tabbar-container::before { left: 0; }
-.tabs-right #tabs-tabbar-container::before { right: 0; }
