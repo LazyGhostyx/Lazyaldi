@@ -953,92 +953,89 @@ button.button-startpage:after { content: unset; }
     overflow: hidden; 
 }
 /* ================================ */
-/* VERTICAL TABBAR AUTO-HIDE (ADD)  */
+/* VERTICAL TABBAR AUTO-HIDE v2     */
+/* - no peek                        */
+/* - glass blur background           */
+/* - reveal on UI-adjacent hover     */
 /* ================================ */
 
-:root {
-  --tabbar-peek-width: 32px;
-  --tabbar-transition: transform .2s ease-out, opacity .2s ease-out, background-color .2s ease-out, color .2s ease-out;
+:root{
+  --tabbar-transition: transform .18s ease-out, opacity .18s ease-out;
+  --tabbar-bg: var(--bg);               /* your theme-aware translucent bg */
+  --tabbar-blur: var(--blurHigh);       /* use your blur variable */
 }
 
-/* Base hidden state */
-#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper {
+/* Keep Vivaldi’s own tabbar backgrounds from becoming “solid slabs” */
+#browser:not(.transparent-tabbar) #tabs-tabbar-container{
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Make wrapper itself transparent; put “glass” on a pseudo-layer */
+#browser:is(.tabs-left,.tabs-right) .tabbar-wrapper{
   position: absolute;
   z-index: 2;
+  background: transparent !important;
   transition: var(--tabbar-transition) !important;
-  opacity: 1;
-  background-color: var(--bg) !important;
-  backdrop-filter: var(--blurHigh) !important;
-  -webkit-backdrop-filter: var(--blurHigh) !important;
+  will-change: transform, opacity;
+  overflow: visible;
 }
 
-/* Left side: hide except peek */
-#browser.tabs-left .tabbar-wrapper {
-  transform: translateX(calc(-100% + var(--tabbar-peek-width)));
+/* Glass layer */
+#browser:is(.tabs-left,.tabs-right) .tabbar-wrapper::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--tabbar-bg);
+  backdrop-filter: var(--tabbar-blur);
+  -webkit-backdrop-filter: var(--tabbar-blur);
+  border-radius: var(--radius);
+  pointer-events: none;
+  z-index: -1;
 }
 
-/* Right side: hide except peek */
-#browser.tabs-right .tabbar-wrapper {
+/* Fully hidden by default (no peek) */
+#browser.tabs-left .tabbar-wrapper{
+  transform: translateX(-100%);
+  opacity: 0;
+}
+#browser.tabs-right .tabbar-wrapper{
   right: 0;
-  transform: translateX(calc(100% - var(--tabbar-peek-width)));
+  transform: translateX(100%);
+  opacity: 0;
 }
 
-/* Optional: hide titles when collapsed (keeps icons visible) */
-#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper .tab .title {
-  color: transparent !important;
-}
-#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper:hover .tab .title {
-  color: var(--colorFg) !important;
-}
-
-/* Reveal on hover */
-#browser:is(.tabs-left, .tabs-right) .tabbar-wrapper:hover {
+/* Reveal on hover of tabbar itself */
+#browser:is(.tabs-left,.tabs-right) .tabbar-wrapper:hover{
   transform: translateX(0) !important;
   opacity: 1 !important;
 }
 
-/* Reveal when mouse reaches edge-adjacent UI */
-#browser.tabs-left .mainbar:hover + .tabbar-wrapper,
-#browser.tabs-right .webpage:hover + .tabbar-wrapper {
+/* Reveal when hovering the UI next to the edge */
+#browser.tabs-left .mainbar:hover + .tabbar-wrapper{
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+#browser.tabs-right .webpage:hover + .tabbar-wrapper{
   transform: translateX(0) !important;
   opacity: 1 !important;
 }
 
-/* Keep visible when workspace popup is active */
-#browser:is(.tabs-left, .tabs-right):has(.WorkspacePopup:visible, .workspace-popup:visible) .tabbar-wrapper {
+/* Reveal while workspace popup is visible */
+#browser:is(.tabs-left,.tabs-right):has(.WorkspacePopup:visible, .workspace-popup:visible) .tabbar-wrapper{
   transform: translateX(0) !important;
   opacity: 1 !important;
 }
 
 /* Keep visible during workspace naming */
-#browser:is(.tabs-left, .tabs-right):has(.quick-command-container.workspace-naming, .workspace-naming, input[placeholder*="workspace"]) .tabbar-wrapper {
+#browser:is(.tabs-left,.tabs-right):has(.quick-command-container.workspace-naming, .workspace-naming, input[placeholder*="workspace"]) .tabbar-wrapper{
   transform: translateX(0) !important;
-  transition: none !important;
   opacity: 1 !important;
+  transition: none !important;
 }
 
-/* Hide on click outside (left) */
-html:active:not(:has(
-  .tabbar-wrapper:hover,
-  .quick-command-container.workspace-naming,
-  .workspace-naming,
-  input[placeholder*="workspace"]:focus,
-  .WorkspacePopup:visible,
-  .workspace-popup:visible
-)) #browser.tabs-left .tabbar-wrapper {
-  transform: translateX(calc(-100% + var(--tabbar-peek-width))) !important;
-  opacity: 0 !important;
-}
-
-/* Hide on click outside (right) */
-html:active:not(:has(
-  .tabbar-wrapper:hover,
-  .quick-command-container.workspace-naming,
-  .workspace-naming,
-  input[placeholder*="workspace"]:focus,
-  .WorkspacePopup:visible,
-  .workspace-popup:visible
-)) #browser.tabs-right .tabbar-wrapper {
-  transform: translateX(calc(100% - var(--tabbar-peek-width))) !important;
-  opacity: 0 !important;
+/* Optional: keep titles visible (remove if you want icon-only until hover) */
+#browser:is(.tabs-left,.tabs-right) .tabbar-wrapper .tab .title{
+  color: var(--colorFg) !important;
 }
